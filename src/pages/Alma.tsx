@@ -145,11 +145,13 @@ export function Alma() {
       ════════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-end overflow-hidden">
 
-        {/* Background image — van full color */}
+        {/* Background image — van full color, fetchpriority high para carga inmediata */}
         <img
-          src="/hero-van2.png"
+          src="/hero-van2-hq.jpg"
           alt="Boa Noite van"
           className="absolute inset-0 w-full h-full object-cover object-center"
+          fetchPriority="high"
+          decoding="async"
         />
 
         {/* Overlay mínimo — preserva colores de la imagen */}

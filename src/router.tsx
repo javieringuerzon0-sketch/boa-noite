@@ -5,8 +5,13 @@ import { Menu } from './pages/Menu';
 import { Contacto } from './pages/Contacto';
 import { Alma } from './pages/Alma';
 import { NotFound } from './pages/NotFound';
+import { Admin } from './pages/Admin';
 
 export const router = createBrowserRouter([
+  {
+    path: '/admin',
+    element: <Admin />,
+  },
   {
     path: '/',
     element: <MainLayout />,
