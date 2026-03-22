@@ -1040,7 +1040,7 @@ export function Home() {
       {/* ══════════════════════════════════════════
           VIDEO BANNER
       ══════════════════════════════════════════ */}
-      <section className="w-full relative">
+      <section className="w-full relative overflow-hidden aspect-video bg-[#09090b]">
         <video
           ref={ctaVideoRef}
           data-src="/boa-noite-cta.mp4"
@@ -1050,7 +1050,7 @@ export function Home() {
           playsInline
           preload="none"
           poster="/poster-cta.jpg"
-          className="w-full block"
+          className="absolute inset-0 w-full h-full object-cover"
           style={{ display: 'block', willChange: 'transform', transform: 'translateZ(0)' }}
         />
         {/* Líneas premium top/bottom */}
