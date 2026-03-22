@@ -162,9 +162,13 @@ function useLazyVideo(threshold = 0.15) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // Ocultar video hasta que tenga contenido (evitar rectángulo negro)
+    el.style.opacity = '0';
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
     const src = (isMobile && el.dataset.srcMobile) ? el.dataset.srcMobile : (el.dataset.src ?? el.src);
     let loaded = false;
+    const showOnPlay = () => { el.style.opacity = '1'; };
+    el.addEventListener('playing', showOnPlay, { once: true });
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -177,13 +181,13 @@ function useLazyVideo(threshold = 0.15) {
           el.play().catch(() => {});
         } else {
           el.pause();
-          el.muted = true; // Siempre mutear al salir del viewport
+          el.muted = true;
         }
       },
       { threshold }
     );
     obs.observe(el);
-    return () => obs.disconnect();
+    return () => { obs.disconnect(); el.removeEventListener('playing', showOnPlay); };
   }, [threshold]);
   return ref;
 }
@@ -477,7 +481,10 @@ export function Home() {
               <div className="absolute -inset-px bg-gradient-to-br from-neon-purple/30 via-transparent to-neon-blue/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-sm" />
 
               {/* Aspect ratio container — video llena 100% sin padding */}
-              <div className="relative rounded-2xl overflow-hidden border border-white/8 aspect-[4/5]">
+              <div
+                className="relative rounded-2xl overflow-hidden border border-white/8 aspect-[4/5]"
+                style={{ backgroundImage: 'url(/poster-meta.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+              >
                 <video
                   ref={metaVideoRef}
                   data-src="/boa-noite-meta.mp4"
@@ -486,11 +493,11 @@ export function Home() {
                   loop
                   playsInline
                   preload="none"
-                  poster="/poster-meta.jpg"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                   style={{
                     willChange: 'transform',
                     transform: 'translateZ(0)',
+                    objectPosition: 'center bottom',
                   }}
                 />
 
@@ -1040,7 +1047,10 @@ export function Home() {
       {/* ══════════════════════════════════════════
           VIDEO BANNER
       ══════════════════════════════════════════ */}
-      <section className="w-full relative overflow-hidden aspect-video bg-[#09090b]">
+      <section
+        className="w-full relative overflow-hidden aspect-video"
+        style={{ backgroundImage: 'url(/poster-cta.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+      >
         <video
           ref={ctaVideoRef}
           data-src="/boa-noite-cta.mp4"
@@ -1049,8 +1059,7 @@ export function Home() {
           loop
           playsInline
           preload="none"
-          poster="/poster-cta.jpg"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
           style={{ display: 'block', willChange: 'transform', transform: 'translateZ(0)' }}
         />
         {/* Líneas premium top/bottom */}
