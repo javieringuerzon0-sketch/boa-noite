@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/((?!assets|menu|products|instagram|icons\\.svg|favicon\\.svg|manifest\\.json|poster-.*\\.jpg|boa-noite-.*\\.mp4|.*\\..*).*)", "destination": "/index.html" }
+  ]
+}
