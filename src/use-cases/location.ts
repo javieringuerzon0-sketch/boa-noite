@@ -30,6 +30,7 @@ export const useTruckLocation = create<LocationStore>()(
 // ── Supabase sync ──────────────────────────────────────────────
 
 export async function fetchLocationFromDB(): Promise<TruckLocation | null> {
+  if (!supabase) return null
   const { data, error } = await supabase
     .from('truck_location')
     .select('*')
@@ -46,6 +47,7 @@ export async function fetchLocationFromDB(): Promise<TruckLocation | null> {
 }
 
 export async function syncLocationToDB(loc: TruckLocation): Promise<void> {
+  if (!supabase) return
   await supabase.from('truck_location').upsert({
     id: 1,
     lat: loc.lat,
@@ -57,6 +59,7 @@ export async function syncLocationToDB(loc: TruckLocation): Promise<void> {
 }
 
 export async function clearLocationInDB(): Promise<void> {
+  if (!supabase) return
   await supabase
     .from('truck_location')
     .update({ is_active: false })
@@ -66,6 +69,7 @@ export async function clearLocationInDB(): Promise<void> {
 export function subscribeToLocation(
   callback: (loc: TruckLocation | null) => void
 ) {
+  if (!supabase) return () => {}
   const channel = supabase
     .channel('truck-location')
     .on(
@@ -88,7 +92,7 @@ export function subscribeToLocation(
     )
     .subscribe()
 
-  return () => { supabase.removeChannel(channel) }
+  return () => { supabase!.removeChannel(channel) }
 }
 
 // ── Utilities ──────────────────────────────────────────────────
