@@ -1282,12 +1282,12 @@ export function Home() {
                   </div>
                 ) : (
                   <form className="grid grid-cols-1 sm:grid-cols-2 gap-4" onSubmit={hsEvent(onEventSubmit)}>
-                    <div className="col-span-2 flex flex-col gap-2">
+                    <div className="sm:col-span-2 flex flex-col gap-2">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre completo</label>
                       <input {...regEvent('name')} type="text" placeholder="Nombre completo"
                         className={`glass bg-white/3 border text-white text-sm px-4 py-3 rounded-xl focus:outline-none transition-all placeholder:text-gray-600 ${evErrors.name ? 'border-red-500/50' : 'border-white/8 focus:border-neon-purple/50'}`} />
                     </div>
-                    <div className="col-span-2 flex flex-col gap-2">
+                    <div className="sm:col-span-2 flex flex-col gap-2">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Tipo de evento</label>
                       <div className="relative">
                         <select {...regEvent('eventType')} className="appearance-none glass bg-white/3 border border-white/8 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-neon-purple/50 transition-all w-full cursor-pointer">
@@ -1308,13 +1308,13 @@ export function Home() {
                       <input {...regEvent('email')} type="email" placeholder="tu@email.com"
                         className={`glass bg-white/3 border text-white text-sm px-4 py-3 rounded-xl focus:outline-none transition-all placeholder:text-gray-600 ${evErrors.email ? 'border-red-500/50' : 'border-white/8 focus:border-neon-purple/50'}`} />
                     </div>
-                    <div className="col-span-2 flex flex-col gap-2">
+                    <div className="sm:col-span-2 flex flex-col gap-2">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Mensaje / Motivo</label>
                       <textarea {...regEvent('notes')} rows={3} placeholder="Cuéntanos sobre tu evento, número de personas, lugar, etc."
                         className="glass bg-white/3 border border-white/8 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-neon-purple/50 transition-all placeholder:text-gray-600 resize-none" />
                     </div>
 
-                    <div className="col-span-2 mt-1">
+                    <div className="sm:col-span-2 mt-1">
                       <button type="submit" disabled={sending}
                         className="relative overflow-hidden w-full font-bold uppercase tracking-widest text-xs px-6 py-4 rounded-xl text-white flex items-center justify-center gap-2 disabled:opacity-70">
                         <span className="absolute inset-0 bg-gradient-to-r from-neon-purple to-neon-blue" />
