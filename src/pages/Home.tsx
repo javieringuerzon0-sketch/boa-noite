@@ -38,7 +38,7 @@ const TICKER = [
 
 /* ── Stats ───────────────────────────────────── */
 const STATS = [
-  { value: '18H', unit: '', label: 'Cold Brew Infusión' },
+  { value: '18H', unit: '', label: 'Infusión en Frío' },
   { value: '6', unit: '+', label: 'Tipos de Eventos' },
   { value: '100', unit: '%', label: 'Café de Especialidad' },
   { value: '4.9', unit: '★', label: '2,400+ Reseñas' },
@@ -631,7 +631,7 @@ export function Home() {
               </div>
               <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter leading-[0.88]">
                 Ediciones<br />
-                <span className="gradient-text-purple-blue">Signature</span>
+                <span className="gradient-text-purple-blue">Exclusivas</span>
               </h2>
             </div>
             <ScrollLink to="/menu" className="text-gray-500 hover:text-white text-xs font-bold tracking-widest uppercase flex items-center gap-2 transition-colors group">

@@ -311,7 +311,7 @@ export function Contacto() {
             {/* Scroll indicator */}
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30">
               <div className="w-px h-12 bg-gradient-to-b from-transparent to-white/40" />
-              <span className="text-[9px] tracking-[0.3em] uppercase">Scroll</span>
+              <span className="text-[9px] tracking-[0.3em] uppercase">Desliza</span>
             </div>
           </section>
         ) : (
@@ -672,7 +672,7 @@ export function Contacto() {
 
             <div className="flex marquee-track" style={{ width: 'max-content' }}>
               {[...[
-                { name: 'Sofía A.',     avatar: 'https://i.pravatar.cc/80?img=1',  event: 'Matrimonio · Vitacura',         text: 'El truck fue la atracción principal. El café specialty superó todas las expectativas. ¡Nuestros invitados siguen hablando de eso!' },
+                { name: 'Sofía A.',     avatar: 'https://i.pravatar.cc/80?img=1',  event: 'Matrimonio · Vitacura',         text: 'El truck fue la atracción principal. El café de especialidad superó todas las expectativas. ¡Nuestros invitados siguen hablando de eso!' },
                 { name: 'Tomás B.',     avatar: 'https://i.pravatar.cc/80?img=12', event: 'Corporativo · Las Condes',       text: 'Puntualidad, profesionalismo y un producto de calidad brutal. Lo hemos contratado tres veces para eventos de empresa.' },
                 { name: 'Fernanda C.',  avatar: 'https://i.pravatar.cc/80?img=5',  event: 'Cumpleaños · Providencia',      text: 'El diseño del truck encajó perfecto con la decoración. Los helados artesanales fueron un hit total con los niños y adultos.' },
                 { name: 'Andrés D.',    avatar: 'https://i.pravatar.cc/80?img=15', event: 'Festival · La Dehesa',           text: 'Para nuestro festival de verano fue el puesto más visitado. La gente formaba fila por el café frío. Increíble.' },
@@ -685,7 +685,7 @@ export function Contacto() {
                 { name: 'Renata K.',    avatar: 'https://i.pravatar.cc/80?img=47', event: 'Matrimonio · Ñuñoa',            text: 'Nuestros invitados no podían creer que un food truck sirviera café de esa calidad. Absolutamente recomendados.' },
                 { name: 'Diego L.',     avatar: 'https://i.pravatar.cc/80?img=60', event: 'Corporativo · Santiago Centro', text: 'Gran experiencia de principio a fin. El truck es instagrameable y el servicio, impecable. Volvemos a contratarlos.' },
               ], ...[
-                { name: 'Sofía A.',     avatar: 'https://i.pravatar.cc/80?img=1',  event: 'Matrimonio · Vitacura',         text: 'El truck fue la atracción principal. El café specialty superó todas las expectativas. ¡Nuestros invitados siguen hablando de eso!' },
+                { name: 'Sofía A.',     avatar: 'https://i.pravatar.cc/80?img=1',  event: 'Matrimonio · Vitacura',         text: 'El truck fue la atracción principal. El café de especialidad superó todas las expectativas. ¡Nuestros invitados siguen hablando de eso!' },
                 { name: 'Tomás B.',     avatar: 'https://i.pravatar.cc/80?img=12', event: 'Corporativo · Las Condes',       text: 'Puntualidad, profesionalismo y un producto de calidad brutal. Lo hemos contratado tres veces para eventos de empresa.' },
                 { name: 'Fernanda C.',  avatar: 'https://i.pravatar.cc/80?img=5',  event: 'Cumpleaños · Providencia',      text: 'El diseño del truck encajó perfecto con la decoración. Los helados artesanales fueron un hit total con los niños y adultos.' },
                 { name: 'Andrés D.',    avatar: 'https://i.pravatar.cc/80?img=15', event: 'Festival · La Dehesa',           text: 'Para nuestro festival de verano fue el puesto más visitado. La gente formaba fila por el café frío. Increíble.' },

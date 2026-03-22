@@ -84,7 +84,7 @@ const VALORES = [
     icon: '✦',
     gradient: 'from-[#ec4899] to-[#c026d3]',
     title: 'Calidad sin compromiso',
-    desc: 'Solo usamos ingredientes specialty-grade. El café viene de orígenes únicos seleccionados cada semana. Los helados se preparan en el truck. Nada industrial. Nunca.',
+    desc: 'Solo usamos ingredientes de grado especialidad. El café viene de orígenes únicos seleccionados cada semana. Los helados se preparan en el truck. Nada industrial. Nunca.',
   },
   {
     icon: '◈',
@@ -378,13 +378,12 @@ export function Alma() {
 
             {/* IGNACIO */}
             <Reveal delay={0} className="h-full">
-              <div className="group relative rounded-3xl transition-all duration-700 cursor-default h-full flex flex-col"
-                style={{ outline: '1px solid rgba(255,255,255,0.06)', outlineOffset: '-1px', transition: 'all 0.7s ease' }}
-                onMouseEnter={e => { e.currentTarget.style.outline = '1px solid rgba(236,72,153,0.4)'; e.currentTarget.style.boxShadow = '0 0 40px rgba(236,72,153,0.15), 0 0 80px rgba(236,72,153,0.06)'; }}
-                onMouseLeave={e => { e.currentTarget.style.outline = '1px solid rgba(255,255,255,0.06)'; e.currentTarget.style.boxShadow = 'none'; }}
+              <div className="group relative rounded-3xl overflow-hidden transition-all duration-700 cursor-default h-full flex flex-col bg-[#09090b]"
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 40px rgba(236,72,153,0.15), 0 0 80px rgba(236,72,153,0.06)'; }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; }}
               >
                 {/* Photo */}
-                <div className="relative h-[420px] rounded-t-3xl overflow-hidden">
+                <div className="relative h-[420px] overflow-hidden">
                   <img
                     src="/ignacio3.png"
                     alt="Ignacio Mac-Farlane, Fundador de Boa Noite"
@@ -406,7 +405,7 @@ export function Alma() {
                 </div>
 
                 {/* Info below */}
-                <div className="bg-[#09090b] p-7 flex-1 rounded-b-3xl">
+                <div className="bg-[#09090b] p-7 flex-1">
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="text-2xl font-extrabold uppercase tracking-tighter text-white leading-tight">
@@ -446,16 +445,15 @@ export function Alma() {
 
             {/* MANE */}
             <Reveal delay={150} className="h-full">
-              <div className="group relative rounded-3xl transition-all duration-700 cursor-default h-full flex flex-col"
-                style={{ outline: '1px solid rgba(255,255,255,0.06)', outlineOffset: '-1px', transition: 'all 0.7s ease' }}
-                onMouseEnter={e => { e.currentTarget.style.outline = '1px solid rgba(45,212,191,0.4)'; e.currentTarget.style.boxShadow = '0 0 40px rgba(45,212,191,0.15), 0 0 80px rgba(45,212,191,0.06)'; }}
-                onMouseLeave={e => { e.currentTarget.style.outline = '1px solid rgba(255,255,255,0.06)'; e.currentTarget.style.boxShadow = 'none'; }}
+              <div className="group relative rounded-3xl overflow-hidden transition-all duration-700 cursor-default h-full flex flex-col bg-[#09090b]"
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 40px rgba(45,212,191,0.15), 0 0 80px rgba(45,212,191,0.06)'; }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; }}
               >
                 {/* Photo */}
-                <div className="relative h-[420px] rounded-t-3xl overflow-hidden">
+                <div className="relative h-[420px] overflow-hidden">
                   <img
                     src="/mane.jpg"
-                    alt="Mane Irágüen, Co-fundadora de Boa Noite"
+                    alt="Mane Irágüen, Co-founder de Boa Noite"
                     className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/20 to-transparent" />
@@ -473,7 +471,7 @@ export function Alma() {
                 </div>
 
                 {/* Info below */}
-                <div className="bg-[#09090b] p-7 flex-1 rounded-b-3xl">
+                <div className="bg-[#09090b] p-7 flex-1">
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="text-2xl font-extrabold uppercase tracking-tighter text-white leading-tight">
@@ -704,7 +702,7 @@ export function Alma() {
                   {[
                     { val: '2', label: 'Fundadores', color: '#ec4899' },
                     { val: '1', label: 'Truck único', color: '#2dd4bf' },
-                    { val: '100%', label: 'Specialty', color: '#c026d3' },
+                    { val: '100%', label: 'Especialidad', color: '#c026d3' },
                     { val: '+50', label: 'Eventos 2024', color: '#38bdf8' },
                   ].map((stat) => (
                     <div key={stat.label} className="glass-dark rounded-xl px-5 py-3 border border-white/6">
