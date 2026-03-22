@@ -162,17 +162,13 @@ function useLazyVideo(threshold = 0.15) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    // Ocultar video completamente hasta que tenga frames renderizados
-    el.style.visibility = 'hidden';
-    el.style.opacity = '0';
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
     const src = (isMobile && el.dataset.srcMobile) ? el.dataset.srcMobile : (el.dataset.src ?? el.src);
     let loaded = false;
-    let ready = false;
+    let shown = false;
     const show = () => {
-      if (ready) return;
-      ready = true;
-      // Doble rAF asegura que el browser ya pintó el frame correcto con object-cover
+      if (shown) return;
+      shown = true;
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           el.style.visibility = 'visible';
@@ -214,7 +210,14 @@ export function Home() {
   useEffect(() => {
     const el = mainVideoRef.current;
     if (!el) return;
-    el.addEventListener('playing', () => { el.style.opacity = '1'; }, { once: true });
+    el.addEventListener('playing', () => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.visibility = 'visible';
+          el.style.opacity = '1';
+        });
+      });
+    }, { once: true });
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
     el.src = isMobile ? '/boa-noite-hero-mobile.mp4' : '/boa-noite-hero.mp4';
     el.load();
@@ -381,7 +384,7 @@ export function Home() {
           preload="auto"
           poster="/poster-hero.jpg"
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-          style={{ willChange: 'transform', transform: 'translateZ(0)', opacity: 0 }}
+          style={{ visibility: 'hidden', willChange: 'transform', transform: 'translateZ(0)', opacity: 0, transition: 'opacity 0.7s ease' }}
         />
 
         {/* Overlay — mínimo, solo legibilidad del texto izquierdo */}
@@ -493,7 +496,7 @@ export function Home() {
             <div className="w-full lg:w-[42%] relative group shrink-0">
               <div className="absolute -inset-px bg-gradient-to-br from-neon-purple/30 via-transparent to-neon-blue/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-sm" />
 
-              {/* Aspect ratio container — video llena 100% sin padding */}
+              {/* Video container — poster visible, video oculto hasta que reproduzca */}
               <div
                 className="relative rounded-2xl overflow-hidden border border-white/8 aspect-[4/5]"
                 style={{ backgroundImage: 'url(/poster-meta.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
@@ -506,8 +509,11 @@ export function Home() {
                   loop
                   playsInline
                   preload="none"
-                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                  className="absolute inset-0 w-full h-full object-cover"
                   style={{
+                    visibility: 'hidden',
+                    opacity: 0,
+                    transition: 'opacity 0.5s ease',
                     willChange: 'transform',
                     transform: 'translateZ(0) scale(1.35)',
                     objectPosition: 'center 60%',
@@ -1072,8 +1078,8 @@ export function Home() {
           loop
           playsInline
           preload="none"
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-          style={{ display: 'block', willChange: 'transform', transform: 'translateZ(0)' }}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ visibility: 'hidden', opacity: 0, transition: 'opacity 0.5s ease', display: 'block', willChange: 'transform', transform: 'translateZ(0)' }}
         />
         {/* Líneas premium top/bottom */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
