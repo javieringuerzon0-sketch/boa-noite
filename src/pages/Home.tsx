@@ -1281,7 +1281,7 @@ export function Home() {
                     <button onClick={() => setSubmitted(false)} className="text-neon-blue text-xs font-bold uppercase tracking-widest mt-1">Otra solicitud</button>
                   </div>
                 ) : (
-                  <form className="grid grid-cols-2 gap-4" onSubmit={hsEvent(onEventSubmit)}>
+                  <form className="grid grid-cols-1 sm:grid-cols-2 gap-4" onSubmit={hsEvent(onEventSubmit)}>
                     <div className="col-span-2 flex flex-col gap-2">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre completo</label>
                       <input {...regEvent('name')} type="text" placeholder="Nombre completo"

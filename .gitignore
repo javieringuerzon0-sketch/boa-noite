@@ -34,3 +34,5 @@ public/backup/
 skills/
 skills-lock.json
 scripts/
+
+.vercel
