@@ -496,11 +496,18 @@ export function Home() {
             <div className="w-full lg:w-[42%] relative group shrink-0">
               <div className="absolute -inset-px bg-gradient-to-br from-neon-purple/30 via-transparent to-neon-blue/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-sm" />
 
-              {/* Video container — poster visible, video oculto hasta que reproduzca */}
+              {/* Video container — poster <img> siempre visible, video encima oculto */}
               <div
-                className="relative rounded-2xl overflow-hidden border border-white/8 aspect-[4/5]"
-                style={{ backgroundImage: 'url(/poster-meta.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+                className="relative rounded-2xl overflow-hidden border border-white/8 aspect-[4/5] bg-[#09090b]"
               >
+                {/* Poster estático — mismo scale/position que el video para coincidir */}
+                <img
+                  src="/poster-meta.jpg"
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ zIndex: 1, transform: 'scale(1.35)', objectPosition: 'center 60%' }}
+                />
+                {/* Video vertical (1080x1920) — oculto hasta reproducir */}
                 <video
                   ref={metaVideoRef}
                   data-src="/boa-noite-meta.mp4"
@@ -511,6 +518,7 @@ export function Home() {
                   preload="none"
                   className="absolute inset-0 w-full h-full object-cover"
                   style={{
+                    zIndex: 2,
                     visibility: 'hidden',
                     opacity: 0,
                     transition: 'opacity 0.5s ease',
@@ -520,13 +528,13 @@ export function Home() {
                   }}
                 />
 
-                {/* Overlay — legibilidad de badges */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#09090b]/60 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neon-purple/60 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neon-blue/40 to-transparent" />
+                {/* Overlay — legibilidad de badges (z-3 sobre video) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#09090b]/60 via-transparent to-transparent pointer-events-none" style={{ zIndex: 3 }} />
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neon-purple/60 to-transparent" style={{ zIndex: 3 }} />
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neon-blue/40 to-transparent" style={{ zIndex: 3 }} />
 
                 {/* Badge TL — Eventos */}
-                <div className="absolute top-3 left-3 sm:top-5 sm:left-5 glass-dark rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 border border-neon-purple/30 animate-float">
+                <div className="absolute top-3 left-3 sm:top-5 sm:left-5 glass-dark rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 border border-neon-purple/30 animate-float" style={{ zIndex: 4 }}>
                   <Trophy size={13} className="text-neon-purple mb-1" />
                   <p className="text-white font-extrabold text-[9px] sm:text-[10px]">Eventos de Día</p>
                   <p className="text-gray-500 text-[8px] sm:text-[9px]">Estadios & Festivales</p>
@@ -536,6 +544,7 @@ export function Home() {
                 <button
                   onClick={toggleMute}
                   aria-label={isMuted ? 'Activar sonido' : 'Silenciar'}
+                  style={{ zIndex: 4 }}
                   className="absolute top-3 right-3 sm:top-5 sm:right-5 glass-dark rounded-xl sm:rounded-2xl px-2.5 py-2 sm:px-3.5 sm:py-2.5 border border-white/10 hover:border-neon-blue/40 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 group/mute"
                 >
                   {isMuted ? (
@@ -552,7 +561,7 @@ export function Home() {
                 </button>
 
                 {/* Badge BR — Rating */}
-                <div className="absolute bottom-3 right-3 sm:bottom-5 sm:right-5 glass-dark rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-neon-purple/20 animate-float delay-500">
+                <div className="absolute bottom-3 right-3 sm:bottom-5 sm:right-5 glass-dark rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-neon-purple/20 animate-float delay-500" style={{ zIndex: 4 }}>
                   <div className="flex items-center gap-0.5 mb-1">
                     {[...Array(5)].map((_, i) => <Star key={i} size={9} className="text-neon-purple fill-neon-purple" />)}
                   </div>
@@ -561,7 +570,7 @@ export function Home() {
                 </div>
 
                 {/* Badge BL — Barista */}
-                <div className="absolute bottom-3 left-3 sm:bottom-5 sm:left-5 glass-dark rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 border border-neon-blue/25 animate-float delay-300">
+                <div className="absolute bottom-3 left-3 sm:bottom-5 sm:left-5 glass-dark rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 border border-neon-blue/25 animate-float delay-300" style={{ zIndex: 4 }}>
                   <Coffee size={13} className="text-neon-blue mb-1" />
                   <p className="text-white font-extrabold text-[9px] sm:text-[10px]">Barista SCA</p>
                   <p className="text-gray-500 text-[8px] sm:text-[9px]">Certificación int'l</p>
