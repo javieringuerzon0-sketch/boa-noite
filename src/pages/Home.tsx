@@ -162,13 +162,25 @@ function useLazyVideo(threshold = 0.15) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    // Ocultar video hasta que tenga contenido (evitar rectángulo negro)
+    // Ocultar video completamente hasta que tenga frames renderizados
+    el.style.visibility = 'hidden';
     el.style.opacity = '0';
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
     const src = (isMobile && el.dataset.srcMobile) ? el.dataset.srcMobile : (el.dataset.src ?? el.src);
     let loaded = false;
-    const showOnPlay = () => { el.style.opacity = '1'; };
-    el.addEventListener('playing', showOnPlay, { once: true });
+    let ready = false;
+    const show = () => {
+      if (ready) return;
+      ready = true;
+      // Doble rAF asegura que el browser ya pintó el frame correcto con object-cover
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.visibility = 'visible';
+          el.style.opacity = '1';
+        });
+      });
+    };
+    el.addEventListener('playing', show, { once: true });
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -187,7 +199,7 @@ function useLazyVideo(threshold = 0.15) {
       { threshold }
     );
     obs.observe(el);
-    return () => { obs.disconnect(); el.removeEventListener('playing', showOnPlay); };
+    return () => { obs.disconnect(); el.removeEventListener('playing', show); };
   }, [threshold]);
   return ref;
 }
