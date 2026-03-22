@@ -198,10 +198,11 @@ export function Home() {
   const metaVideoRef = useLazyVideo(0.1);
   const ctaVideoRef  = useLazyVideo(0.05);
 
-  // Set hero video source based on device
+  // Set hero video source based on device — mostrar solo al reproducir
   useEffect(() => {
     const el = mainVideoRef.current;
     if (!el) return;
+    el.addEventListener('playing', () => { el.style.opacity = '1'; }, { once: true });
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
     el.src = isMobile ? '/boa-noite-hero-mobile.mp4' : '/boa-noite-hero.mp4';
     el.load();
@@ -356,7 +357,7 @@ export function Home() {
       {/* ══════════════════════════════════════════
           HERO
       ══════════════════════════════════════════ */}
-      <section className="relative w-full min-h-screen flex items-center overflow-hidden">
+      <section className="relative w-full min-h-screen flex items-center overflow-hidden" style={{ backgroundImage: 'url(/poster-hero.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
 
         {/* Video de fondo — 2K desktop, 1080p mobile, color grading baked */}
         <video
@@ -367,8 +368,8 @@ export function Home() {
           playsInline
           preload="auto"
           poster="/poster-hero.jpg"
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ willChange: 'transform', transform: 'translateZ(0)' }}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+          style={{ willChange: 'transform', transform: 'translateZ(0)', opacity: 0 }}
         />
 
         {/* Overlay — mínimo, solo legibilidad del texto izquierdo */}
@@ -496,56 +497,56 @@ export function Home() {
                   className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                   style={{
                     willChange: 'transform',
-                    transform: 'translateZ(0)',
-                    objectPosition: 'center bottom',
+                    transform: 'translateZ(0) scale(1.35)',
+                    objectPosition: 'center 60%',
                   }}
                 />
 
-                {/* Overlay mínimo — solo para legibilidad de badges */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#09090b]/40 via-transparent to-transparent pointer-events-none" />
+                {/* Overlay — legibilidad de badges */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#09090b]/60 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neon-purple/60 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neon-blue/40 to-transparent" />
 
                 {/* Badge TL — Eventos */}
-                <div className="absolute top-5 left-5 glass-dark rounded-2xl p-3.5 border border-neon-purple/30 animate-float">
-                  <Trophy size={13} className="text-neon-purple mb-1.5" />
-                  <p className="text-white font-extrabold text-[10px]">Eventos de Día</p>
-                  <p className="text-gray-500 text-[9px]">Estadios & Festivales</p>
+                <div className="absolute top-3 left-3 sm:top-5 sm:left-5 glass-dark rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 border border-neon-purple/30 animate-float">
+                  <Trophy size={13} className="text-neon-purple mb-1" />
+                  <p className="text-white font-extrabold text-[9px] sm:text-[10px]">Eventos de Día</p>
+                  <p className="text-gray-500 text-[8px] sm:text-[9px]">Estadios & Festivales</p>
                 </div>
 
                 {/* Btn TR — Mute toggle */}
                 <button
                   onClick={toggleMute}
                   aria-label={isMuted ? 'Activar sonido' : 'Silenciar'}
-                  className="absolute top-5 right-5 glass-dark rounded-2xl px-3.5 py-2.5 border border-white/10 hover:border-neon-blue/40 transition-all duration-300 flex items-center gap-2 group/mute"
+                  className="absolute top-3 right-3 sm:top-5 sm:right-5 glass-dark rounded-xl sm:rounded-2xl px-2.5 py-2 sm:px-3.5 sm:py-2.5 border border-white/10 hover:border-neon-blue/40 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 group/mute"
                 >
                   {isMuted ? (
                     <>
-                      <VolumeX size={14} className="text-gray-500 group-hover/mute:text-white transition-colors" />
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-gray-500 group-hover/mute:text-white transition-colors">Sonido</span>
+                      <VolumeX size={13} className="text-gray-500 group-hover/mute:text-white transition-colors" />
+                      <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-gray-500 group-hover/mute:text-white transition-colors">Sonido</span>
                     </>
                   ) : (
                     <>
-                      <Volume2 size={14} className="text-neon-blue" />
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-neon-blue">Silenciar</span>
+                      <Volume2 size={13} className="text-neon-blue" />
+                      <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-neon-blue">Silenciar</span>
                     </>
                   )}
                 </button>
 
                 {/* Badge BR — Rating */}
-                <div className="absolute bottom-5 right-5 glass-dark rounded-2xl p-4 border border-neon-purple/20 animate-float delay-500">
-                  <div className="flex items-center gap-0.5 mb-1.5">
+                <div className="absolute bottom-3 right-3 sm:bottom-5 sm:right-5 glass-dark rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-neon-purple/20 animate-float delay-500">
+                  <div className="flex items-center gap-0.5 mb-1">
                     {[...Array(5)].map((_, i) => <Star key={i} size={9} className="text-neon-purple fill-neon-purple" />)}
                   </div>
-                  <p className="text-white font-extrabold text-xs">4.9 / 5.0</p>
-                  <p className="text-gray-500 text-[9px] mt-0.5">2,400+ reseñas</p>
+                  <p className="text-white font-extrabold text-[11px] sm:text-xs">4.9 / 5.0</p>
+                  <p className="text-gray-500 text-[8px] sm:text-[9px] mt-0.5">2,400+ reseñas</p>
                 </div>
 
                 {/* Badge BL — Barista */}
-                <div className="absolute bottom-5 left-5 glass-dark rounded-2xl p-3.5 border border-neon-blue/25 animate-float delay-300">
-                  <Coffee size={13} className="text-neon-blue mb-1.5" />
-                  <p className="text-white font-extrabold text-[10px]">Barista SCA</p>
-                  <p className="text-gray-500 text-[9px]">Certificación int'l</p>
+                <div className="absolute bottom-3 left-3 sm:bottom-5 sm:left-5 glass-dark rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 border border-neon-blue/25 animate-float delay-300">
+                  <Coffee size={13} className="text-neon-blue mb-1" />
+                  <p className="text-white font-extrabold text-[9px] sm:text-[10px]">Barista SCA</p>
+                  <p className="text-gray-500 text-[8px] sm:text-[9px]">Certificación int'l</p>
                 </div>
               </div>
             </div>
