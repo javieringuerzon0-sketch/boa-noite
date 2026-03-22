@@ -496,18 +496,10 @@ export function Home() {
             <div className="w-full lg:w-[42%] relative group shrink-0">
               <div className="absolute -inset-px bg-gradient-to-br from-neon-purple/30 via-transparent to-neon-blue/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-sm" />
 
-              {/* Video container — poster <img> siempre visible, video encima oculto */}
+              {/* Video container — sin poster, video directo desde frame 0 */}
               <div
                 className="relative rounded-2xl overflow-hidden border border-white/8 aspect-[4/5] bg-[#09090b]"
               >
-                {/* Poster estático — mismo scale/position que el video para coincidir */}
-                <img
-                  src="/poster-meta.jpg"
-                  alt=""
-                  className="absolute inset-0 w-full h-full object-cover"
-                  style={{ zIndex: 1, transform: 'scale(1.35)', objectPosition: 'center 60%' }}
-                />
-                {/* Video vertical (1080x1920) — oculto hasta reproducir */}
                 <video
                   ref={metaVideoRef}
                   data-src="/boa-noite-meta.mp4"
@@ -518,7 +510,6 @@ export function Home() {
                   preload="none"
                   className="absolute inset-0 w-full h-full object-cover"
                   style={{
-                    zIndex: 2,
                     visibility: 'hidden',
                     opacity: 0,
                     transition: 'opacity 0.5s ease',
