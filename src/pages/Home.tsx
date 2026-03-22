@@ -177,15 +177,26 @@ function useLazyVideo(threshold = 0.15) {
       });
     };
     el.addEventListener('playing', show, { once: true });
-    const obs = new IntersectionObserver(
+
+    // Precarga: empieza a descargar el video 800px ANTES de que sea visible
+    const preloadObs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !loaded) {
+          el.muted = true;
+          el.src = src;
+          el.load();
+          loaded = true;
+          preloadObs.disconnect();
+        }
+      },
+      { rootMargin: '800px' }
+    );
+    preloadObs.observe(el);
+
+    // Play/pause cuando entra/sale del viewport real
+    const playObs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          if (!loaded) {
-            el.muted = true;
-            el.src = src;
-            el.load();
-            loaded = true;
-          }
           el.play().catch(() => {});
         } else {
           el.pause();
@@ -194,8 +205,9 @@ function useLazyVideo(threshold = 0.15) {
       },
       { threshold }
     );
-    obs.observe(el);
-    return () => { obs.disconnect(); el.removeEventListener('playing', show); };
+    playObs.observe(el);
+
+    return () => { preloadObs.disconnect(); playObs.disconnect(); el.removeEventListener('playing', show); };
   }, [threshold]);
   return ref;
 }
