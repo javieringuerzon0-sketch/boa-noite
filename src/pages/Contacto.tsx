@@ -52,7 +52,7 @@ const FAQS = [
 ];
 
 const STATS = [
-  { val: '+50', label: 'Eventos 2024' },
+  { val: '+100', label: 'Eventos realizados' },
   { val: '100%', label: 'Café de Especialidad' },
   { val: '24h', label: 'Respuesta garantizada' },
   { val: '⭐ 5.0', label: 'Valoración promedio' },

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { MapPin, Power, PowerOff, Loader2, Shield, Coffee, Wifi, WifiOff } from 'lucide-react';
 import { syncLocationToDB, clearLocationInDB, reverseGeocode } from '../use-cases/location';
 
-const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY || 'boanoite2024';
+const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY || 'boanoite2026';
 const UPDATE_INTERVAL = 30_000; // 30 segundos
 
 export function Admin() {

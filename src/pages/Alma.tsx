@@ -70,7 +70,7 @@ const CHAPTERS = [
       'Después de un festival en el que el café tardó 20 minutos y sabía a nada, Ignacio miró a Mane y dijo: "Podemos hacerlo mejor." No fue solo una idea — fue una certeza. Tomaron sus conocimientos de Ingeniería Comercial y los pusieron al servicio de algo que amaban: crear experiencias. Consiguieron un camión clásico, lo convirtieron en el icónico vehículo de rayas rosas y turquesa que hoy recorre Santiago, y lo llamaron Boa Noite — "Buenas Noches" en portugués — un guiño a las noches mágicas en festivales brasileños que los habían inspirado.',
   },
   {
-    year: '2024',
+    year: '2024–Hoy',
     title: 'El movimiento',
     border: 'border-l-neon-purple',
     yearColor: 'text-neon-purple',
@@ -106,7 +106,8 @@ const MILESTONES = [
   { year: 'Jun 2023', text: 'Primer evento oficial en Parque Araucano' },
   { year: 'Sep 2023', text: 'Debut en estadio con 8,000 asistentes' },
   { year: 'Ene 2024', text: 'Incorporación al circuito de festivales de verano' },
-  { year: 'Hoy', text: 'Referente de café de especialidad móvil en RM' },
+  { year: '2025', text: 'Expansión a eventos corporativos y festivales masivos' },
+  { year: '2026', text: 'Referente de café de especialidad móvil en RM' },
 ];
 
 /* ─────────────────────────────────────────────────────────────
@@ -705,7 +706,7 @@ export function Alma() {
                     { val: '2', label: 'Fundadores', color: '#ec4899' },
                     { val: '1', label: 'Truck único', color: '#2dd4bf' },
                     { val: '100%', label: 'Especialidad', color: '#c026d3' },
-                    { val: '+50', label: 'Eventos 2024', color: '#38bdf8' },
+                    { val: '+100', label: 'Eventos realizados', color: '#38bdf8' },
                   ].map((stat) => (
                     <div key={stat.label} className="glass-dark rounded-xl px-5 py-3 border border-white/6">
                       <div className="text-2xl font-extrabold leading-none" style={{ color: stat.color }}>{stat.val}</div>
