@@ -379,36 +379,40 @@ export function Alma() {
           {/* Founders grid */}
           <div className="grid md:grid-cols-2 gap-8 items-stretch">
 
-            {/* IGNACIO */}
+            {/* IGNACIO — single-div card, no seams */}
             <Reveal delay={0} className="h-full">
-              <div className="group relative rounded-3xl overflow-hidden transition-all duration-700 cursor-default h-full flex flex-col bg-[#09090b]"
+              <div
+                className="group relative rounded-3xl overflow-hidden cursor-default h-full bg-[#09090b]"
+                style={{ transition: 'box-shadow 0.7s ease' }}
                 onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 40px rgba(236,72,153,0.15), 0 0 80px rgba(236,72,153,0.06)'; }}
                 onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; }}
               >
-                {/* Photo */}
-                <div className="relative h-[420px] overflow-hidden">
-                  <img
-                    src="/ignacio3.png"
-                    alt="Ignacio Mac-Farlane, Fundador de Boa Noite"
-                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                  />
-                  {/* Gradient overlay at bottom of photo */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/20 to-transparent" />
+                {/* Photo — absolute, fills top portion */}
+                <img
+                  src="/ignacio3.png"
+                  alt="Ignacio Mac-Farlane, Fundador de Boa Noite"
+                  className="absolute top-0 left-0 w-full h-[420px] object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                  style={{ backfaceVisibility: 'hidden' }}
+                />
+                {/* Gradient — seamlessly blends photo into bg */}
+                <div className="absolute top-0 left-0 w-full h-[420px] bg-gradient-to-t from-[#09090b] via-[#09090b]/30 to-transparent pointer-events-none" />
 
-                  {/* Role badge floating on photo */}
-                  <div className="absolute top-5 left-5">
-                    <div className="glass-dark rounded-full px-4 py-1.5 border border-[#ec4899]/30">
-                      <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#ec4899]">Founder</span>
-                    </div>
+                {/* Role badge */}
+                <div className="absolute top-5 left-5 z-10">
+                  <div className="glass-dark rounded-full px-4 py-1.5 border border-[#ec4899]/30">
+                    <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#ec4899]">Founder</span>
                   </div>
-
-                  {/* Decorative corner accent */}
-                  <div className="absolute top-5 right-5 w-px h-8 bg-gradient-to-b from-[#ec4899]/60 to-transparent" />
-                  <div className="absolute top-5 right-5 w-8 h-px bg-gradient-to-l from-[#ec4899]/60 to-transparent" />
                 </div>
 
-                {/* Info below */}
-                <div className="bg-[#09090b] p-7 flex-1">
+                {/* Corner accent */}
+                <div className="absolute top-5 right-5 w-px h-8 bg-gradient-to-b from-[#ec4899]/60 to-transparent z-10" />
+                <div className="absolute top-5 right-5 w-8 h-px bg-gradient-to-l from-[#ec4899]/60 to-transparent z-10" />
+
+                {/* Spacer for image height */}
+                <div className="h-[380px]" />
+
+                {/* Info — flows naturally, no separate bg needed */}
+                <div className="relative z-10 p-7">
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="text-2xl font-extrabold uppercase tracking-tighter text-white leading-tight">
@@ -426,12 +430,10 @@ export function Alma() {
                     </div>
                   </div>
 
-                  {/* Quote */}
                   <blockquote className="text-sm text-white/60 leading-relaxed italic border-l-2 border-[#ec4899]/40 pl-4 mb-6 font-light">
                     "Queríamos que cada taza contara algo. Que cada evento tuviera alma."
                   </blockquote>
 
-                  {/* Passion tags */}
                   <div className="flex flex-wrap gap-2">
                     {['🌿 Naturaleza', '🎵 Música', '☕ Café de especialidad'].map((tag) => (
                       <span
@@ -446,35 +448,39 @@ export function Alma() {
               </div>
             </Reveal>
 
-            {/* MANE */}
+            {/* MANE — single-div card, no seams */}
             <Reveal delay={150} className="h-full">
-              <div className="group relative rounded-3xl overflow-hidden transition-all duration-700 cursor-default h-full flex flex-col bg-[#09090b]"
+              <div
+                className="group relative rounded-3xl overflow-hidden cursor-default h-full bg-[#09090b]"
+                style={{ transition: 'box-shadow 0.7s ease' }}
                 onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 40px rgba(45,212,191,0.15), 0 0 80px rgba(45,212,191,0.06)'; }}
                 onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; }}
               >
-                {/* Photo */}
-                <div className="relative h-[420px] overflow-hidden">
-                  <img
-                    src="/mane.jpg"
-                    alt="Mane Irágüen, Co-founder de Boa Noite"
-                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/20 to-transparent" />
+                {/* Photo — absolute, fills top portion */}
+                <img
+                  src="/mane.jpg"
+                  alt="Mane Irágüen, Co-founder de Boa Noite"
+                  className="absolute top-0 left-0 w-full h-[420px] object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  style={{ backfaceVisibility: 'hidden' }}
+                />
+                <div className="absolute top-0 left-0 w-full h-[420px] bg-gradient-to-t from-[#09090b] via-[#09090b]/30 to-transparent pointer-events-none" />
 
-                  {/* Role badge */}
-                  <div className="absolute top-5 left-5">
-                    <div className="glass-dark rounded-full px-4 py-1.5 border border-[#2dd4bf]/30">
-                      <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#2dd4bf]">Co-founder</span>
-                    </div>
+                {/* Role badge */}
+                <div className="absolute top-5 left-5 z-10">
+                  <div className="glass-dark rounded-full px-4 py-1.5 border border-[#2dd4bf]/30">
+                    <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#2dd4bf]">Co-founder</span>
                   </div>
-
-                  {/* Decorative corner accent */}
-                  <div className="absolute top-5 right-5 w-px h-8 bg-gradient-to-b from-[#2dd4bf]/60 to-transparent" />
-                  <div className="absolute top-5 right-5 w-8 h-px bg-gradient-to-l from-[#2dd4bf]/60 to-transparent" />
                 </div>
 
-                {/* Info below */}
-                <div className="bg-[#09090b] p-7 flex-1">
+                {/* Corner accent */}
+                <div className="absolute top-5 right-5 w-px h-8 bg-gradient-to-b from-[#2dd4bf]/60 to-transparent z-10" />
+                <div className="absolute top-5 right-5 w-8 h-px bg-gradient-to-l from-[#2dd4bf]/60 to-transparent z-10" />
+
+                {/* Spacer for image height */}
+                <div className="h-[380px]" />
+
+                {/* Info */}
+                <div className="relative z-10 p-7">
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="text-2xl font-extrabold uppercase tracking-tighter text-white leading-tight">
@@ -492,12 +498,10 @@ export function Alma() {
                     </div>
                   </div>
 
-                  {/* Quote */}
                   <blockquote className="text-sm text-white/60 leading-relaxed italic border-l-2 border-[#2dd4bf]/40 pl-4 mb-6 font-light">
                     "Si el espacio es bonito y el café es bueno, la gente siempre vuelve."
                   </blockquote>
 
-                  {/* Passion tags */}
                   <div className="flex flex-wrap gap-2">
                     {['🌿 Naturaleza', '🎵 Música', '✨ Vida sana'].map((tag) => (
                       <span

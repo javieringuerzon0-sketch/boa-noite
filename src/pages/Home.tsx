@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { ArrowRight, Star, Quote, Zap, Trophy, Coffee, IceCream, Users, Volume2, VolumeX, MapPin, Navigation, Clock, ChevronDown, CheckCircle, Truck, Loader2, Instagram, MessageCircle } from 'lucide-react';
+import { ArrowRight, Star, Quote, Zap, Trophy, Coffee, IceCream, Users, Volume2, VolumeX, MapPin, Navigation, ChevronDown, CheckCircle, Truck, Loader2, Instagram, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ScrollLink } from '../components/ui/ScrollLink';
 import { useForm } from 'react-hook-form';
