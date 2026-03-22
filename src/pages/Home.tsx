@@ -38,7 +38,7 @@ const TICKER = [
 
 /* ── Stats ───────────────────────────────────── */
 const STATS = [
-  { value: '18H', unit: '', label: 'Infusión en Frío' },
+  { value: '100', unit: '+', label: 'Eventos Realizados' },
   { value: '6', unit: '+', label: 'Tipos de Eventos' },
   { value: '100', unit: '%', label: 'Café de Especialidad' },
   { value: '4.9', unit: '★', label: '2,400+ Reseñas' },
