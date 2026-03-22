@@ -156,6 +156,7 @@ const TRUST_TESTIMONIALS = [
 ];
 
 /* ── Lazy video hook: play only when in viewport, serves mobile src on small screens ── */
+/* Mutes video when leaving viewport to prevent multiple audio tracks on mobile */
 function useLazyVideo(threshold = 0.15) {
   const ref = useRef<HTMLVideoElement>(null);
   useEffect(() => {
@@ -168,7 +169,7 @@ function useLazyVideo(threshold = 0.15) {
       ([entry]) => {
         if (entry.isIntersecting) {
           if (!loaded) {
-            el.muted = true; // React muted prop bug — forzar solo en carga inicial
+            el.muted = true;
             el.src = src;
             el.load();
             loaded = true;
@@ -176,6 +177,7 @@ function useLazyVideo(threshold = 0.15) {
           el.play().catch(() => {});
         } else {
           el.pause();
+          el.muted = true; // Siempre mutear al salir del viewport
         }
       },
       { threshold }
@@ -215,8 +217,20 @@ export function Home() {
   const toggleMute = () => {
     const next = !isMuted;
     setIsMuted(next);
-    if (mainVideoRef.current) mainVideoRef.current.muted = next;
-    if (metaVideoRef.current) metaVideoRef.current.muted = next;
+    // Solo desmutear videos visibles en viewport, mutear los que no
+    const videos = [mainVideoRef.current, metaVideoRef.current, ctaVideoRef.current];
+    videos.forEach(v => {
+      if (!v) return;
+      if (next) {
+        // Muteando todo
+        v.muted = true;
+      } else {
+        // Desmuteando — solo el que está en viewport
+        const rect = v.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight && rect.bottom > 0;
+        v.muted = !inView;
+      }
+    });
   };
 
   // GPS + Supabase
