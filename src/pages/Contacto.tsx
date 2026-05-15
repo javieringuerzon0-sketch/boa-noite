@@ -1,11 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   ArrowRight, ArrowLeft, Check, Instagram,
   MessageCircle, ChevronDown, ChevronUp,
   Heart, Building2, Cake, Music2, Sparkles,
   Users, Calendar, Mail, User, Send,
-  MapPin, Star,
+  MapPin, Star, ChevronLeft, ChevronRight,
 } from 'lucide-react';
+import { toast } from 'sonner';
+import { supabase } from '../lib/supabase';
 
 /* ─── Constants ─────────────────────────────────────────── */
 const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY as string;
@@ -92,12 +94,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 /* ─── Step wrapper (slide animation) ────────────────────── */
 function StepSlide({ children, dir }: { children: React.ReactNode; dir: 'forward' | 'back' }) {
   return (
-    <div
-      className="w-full"
-      style={{
-        animation: `slideIn${dir === 'forward' ? 'Right' : 'Left'} 0.4s cubic-bezier(0.22,1,0.36,1) both`,
-      }}
-    >
+    <div className={`w-full ${dir === 'forward' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`}>
       {children}
     </div>
   );
@@ -123,6 +120,165 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         </div>
       )}
     </button>
+  );
+}
+
+/* ─── Testimonial data ───────────────────────────────────── */
+const TESTIMONIALS = [
+  { name: 'Sofía A.',     avatar: 'https://i.pravatar.cc/80?img=1',  event: 'Matrimonio · Vitacura',         text: 'El truck fue la atracción principal. El café de especialidad superó todas las expectativas. ¡Nuestros invitados siguen hablando de eso!' },
+  { name: 'Tomás B.',     avatar: 'https://i.pravatar.cc/80?img=12', event: 'Corporativo · Las Condes',      text: 'Puntualidad, profesionalismo y un producto de calidad brutal. Lo hemos contratado tres veces para eventos de empresa.' },
+  { name: 'Fernanda C.',  avatar: 'https://i.pravatar.cc/80?img=5',  event: 'Cumpleaños · Providencia',     text: 'El diseño del truck encajó perfecto con la decoración. Los helados artesanales fueron un hit total con los niños y adultos.' },
+  { name: 'Andrés D.',    avatar: 'https://i.pravatar.cc/80?img=15', event: 'Festival · La Dehesa',          text: 'Para nuestro festival de verano fue el puesto más visitado. La gente formaba fila por el café frío. Increíble.' },
+  { name: 'Isidora E.',   avatar: 'https://i.pravatar.cc/80?img=9',  event: 'Matrimonio · Lo Barnechea',    text: 'Gracias a Boa Noite nuestro matrimonio tuvo ese toque diferente que buscábamos. Muy recomendados, sin dudarlo.' },
+  { name: 'Matías F.',    avatar: 'https://i.pravatar.cc/80?img=22', event: 'Corporativo · Ñuñoa',          text: 'Nuestro equipo quedó encantado en el team building. Servicio impecable, sabores únicos y una presentación top.' },
+  { name: 'Javiera G.',   avatar: 'https://i.pravatar.cc/80?img=16', event: 'Aniversario · Las Condes',     text: 'El detalle del truck rosa y turquesa fue la foto más compartida de la noche. Un 10/10 en todo sentido.' },
+  { name: 'Sebastián H.', avatar: 'https://i.pravatar.cc/80?img=33', event: 'Lanzamiento · Providencia',    text: 'El lanzamiento de producto necesitaba algo memorable. Boa Noite lo dio. Los clientes llegaron por el café y se quedaron por el helado.' },
+  { name: 'Camila I.',    avatar: 'https://i.pravatar.cc/80?img=25', event: 'Boda · Vitacura',              text: 'Desde el primer contacto hasta el último café, todo fue perfecto. Son serios, creativos y el resultado superó lo esperado.' },
+  { name: 'Felipe J.',    avatar: 'https://i.pravatar.cc/80?img=51', event: 'Evento Social · La Dehesa',    text: 'Contraté Boa Noite para el cumpleaños de mi madre y fue un éxito rotundo. La calidad del café es otra categoría.' },
+  { name: 'Renata K.',    avatar: 'https://i.pravatar.cc/80?img=47', event: 'Matrimonio · Ñuñoa',           text: 'Nuestros invitados no podían creer que un food truck sirviera café de esa calidad. Absolutamente recomendados.' },
+  { name: 'Diego L.',     avatar: 'https://i.pravatar.cc/80?img=60', event: 'Corporativo · Santiago Centro',text: 'Gran experiencia de principio a fin. El truck es instagrameable y el servicio, impecable. Volvemos a contratarlos.' },
+];
+
+/* ─── Testimonial Carousel ───────────────────────────────── */
+function TestimonialCarousel() {
+  const [current, setCurrent] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const [direction, setDirection] = useState<'left' | 'right'>('right');
+  const total = TESTIMONIALS.length;
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const goTo = useCallback((idx: number, dir: 'left' | 'right') => {
+    if (animating) return;
+    setDirection(dir);
+    setAnimating(true);
+    setTimeout(() => {
+      setCurrent(idx);
+      setAnimating(false);
+    }, 320);
+  }, [animating]);
+
+  const prev = useCallback(() => goTo((current - 1 + total) % total, 'left'),  [current, total, goTo]);
+  const next = useCallback(() => goTo((current + 1) % total,          'right'), [current, total, goTo]);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(next, 5000);
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [next]);
+
+  const t = TESTIMONIALS[current];
+
+  return (
+    <section className="relative py-24 overflow-hidden">
+      <div className="absolute inset-0 grid-overlay opacity-15" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ec4899]/20 to-transparent" />
+
+      <div className="relative z-10 max-w-4xl mx-auto px-6">
+
+        {/* Header */}
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <span className="h-px w-8 bg-gradient-to-r from-transparent to-[#ec4899]" />
+            <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#ec4899]">Lo que dicen</span>
+            <span className="h-px w-8 bg-gradient-to-l from-transparent to-[#ec4899]" />
+          </div>
+          <h2 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-tighter text-white">
+            Eventos que<br />
+            <span style={{
+              background: 'linear-gradient(135deg, #ec4899 0%, #2dd4bf 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>marcaron la diferencia</span>
+          </h2>
+        </div>
+
+        {/* Card */}
+        <div className="relative overflow-hidden">
+          <div
+            key={current}
+            className={`glass rounded-3xl p-8 sm:p-12 border border-white/8 transition-all duration-320 ${
+              animating
+                ? direction === 'right'
+                  ? 'opacity-0 translate-x-8'
+                  : 'opacity-0 -translate-x-8'
+                : 'opacity-100 translate-x-0'
+            }`}
+            style={{ transition: 'opacity 0.32s ease, transform 0.32s ease' }}
+          >
+            {/* Stars */}
+            <div className="flex gap-1 mb-6">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} size={13} className="fill-[#ec4899] text-[#ec4899]" />
+              ))}
+            </div>
+
+            {/* Quote */}
+            <p className="text-xl sm:text-2xl text-white/80 font-light leading-relaxed italic mb-8">
+              "{t.text}"
+            </p>
+
+            {/* Author */}
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-4">
+                <img
+                  src={t.avatar}
+                  alt={t.name}
+                  className="w-14 h-14 rounded-full object-cover border-2 border-white/10"
+                />
+                <div>
+                  <div className="text-base font-bold text-white leading-tight">{t.name}</div>
+                  <div className="text-[11px] text-white/35 uppercase tracking-widest mt-0.5">{t.event}</div>
+                </div>
+              </div>
+
+              {/* Counter */}
+              <span className="text-[10px] font-bold tracking-widest text-white/20 uppercase">
+                {current + 1} / {total}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Controls */}
+        <div className="flex items-center justify-between mt-8">
+
+          {/* Dot indicators */}
+          <div className="flex gap-2">
+            {TESTIMONIALS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goTo(i, i > current ? 'right' : 'left')}
+                aria-label={`Ir al testimonio ${i + 1}`}
+                className="transition-all duration-300 rounded-full"
+                style={{
+                  width:  i === current ? '24px' : '6px',
+                  height: '6px',
+                  background: i === current ? '#ec4899' : 'rgba(255,255,255,0.15)',
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Prev / Next */}
+          <div className="flex gap-2">
+            <button
+              onClick={prev}
+              aria-label="Anterior testimonio"
+              className="w-11 h-11 rounded-full glass border border-white/10 hover:border-[#ec4899]/40 flex items-center justify-center transition-all duration-200 hover:scale-105"
+            >
+              <ChevronLeft size={16} className="text-white/60" />
+            </button>
+            <button
+              onClick={next}
+              aria-label="Siguiente testimonio"
+              className="w-11 h-11 rounded-full glass border border-white/10 hover:border-[#ec4899]/40 flex items-center justify-center transition-all duration-200 hover:scale-105"
+            >
+              <ChevronRight size={16} className="text-white/60" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -185,10 +341,26 @@ export function Contacto() {
         }),
       });
       const data = await res.json();
-      if (data.success) { setSent(true); }
-      else setError('Error al enviar. Intenta por WhatsApp.');
+      if (data.success) {
+        supabase?.from('leads').insert({
+          name:       form.name,
+          email:      form.email,
+          event_type: EVENT_TYPES.find(e => e.id === form.eventType)?.label ?? form.eventType,
+          guests:     form.guests,
+          date:       form.date,
+          location:   form.location,
+          notes:      form.notes || null,
+          source:     'contacto',
+        }).then(() => {});
+        setSent(true);
+        toast.success('¡Solicitud enviada! Te respondemos en menos de 24h.');
+      } else {
+        setError('Error al enviar. Intenta por WhatsApp.');
+        toast.error('Error al enviar. Intenta por WhatsApp.');
+      }
     } catch {
       setError('Sin conexión. Intenta por WhatsApp.');
+      toast.error('Sin conexión. Intenta por WhatsApp.');
     } finally {
       setSending(false);
     }
@@ -206,18 +378,6 @@ export function Contacto() {
   /* ── Render ─────────────────────── */
   return (
     <>
-      {/* Slide animations injected inline */}
-      <style>{`
-        @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(40px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-40px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-      `}</style>
-
       <div className="min-h-screen bg-[#09090b] text-white overflow-x-hidden">
 
         {/* ── AMBIENT GLOWS ───────────────────────────────── */}
@@ -397,7 +557,7 @@ export function Contacto() {
                                 className={`flex items-center gap-4 p-5 rounded-2xl border text-left transition-all duration-300 ${
                                   sel
                                     ? 'border-[#ec4899]/60 bg-[#ec4899]/10'
-                                    : 'border-white/8 glass hover:border-white/20'
+                                    : 'border-white/8 glass hover:border-[#ec4899]/30 hover:bg-[#ec4899]/5 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(236,72,153,0.12)]'
                                 }`}
                               >
                                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
@@ -442,7 +602,7 @@ export function Contacto() {
                                 className={`flex flex-col items-start gap-1 p-6 rounded-2xl border text-left transition-all duration-300 ${
                                   sel
                                     ? 'border-[#2dd4bf]/60 bg-[#2dd4bf]/10'
-                                    : 'border-white/8 glass hover:border-white/20'
+                                    : 'border-white/8 glass hover:border-[#2dd4bf]/30 hover:bg-[#2dd4bf]/5 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(45,212,191,0.12)]'
                                 }`}
                               >
                                 <Users size={18} className={sel ? 'text-[#2dd4bf]' : 'text-white/30'} />
@@ -631,106 +791,8 @@ export function Contacto() {
         {/* ══════════════════════════════════════════════════
             TESTIMONIAL CAROUSEL
         ══════════════════════════════════════════════════ */}
-        <section className="relative py-24 overflow-hidden">
-          <div className="absolute inset-0 grid-overlay opacity-15" />
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ec4899]/20 to-transparent" />
+        <TestimonialCarousel />
 
-          {/* Header */}
-          <div className="relative z-10 text-center mb-14 px-6">
-            <div className="inline-flex items-center gap-3 mb-4">
-              <span className="h-px w-8 bg-gradient-to-r from-transparent to-[#ec4899]" />
-              <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#ec4899]">Lo que dicen</span>
-              <span className="h-px w-8 bg-gradient-to-l from-transparent to-[#ec4899]" />
-            </div>
-            <h2 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-tighter text-white">
-              Eventos que<br />
-              <span style={{
-                background: 'linear-gradient(135deg, #ec4899 0%, #2dd4bf 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}>marcaron la diferencia</span>
-            </h2>
-          </div>
-
-          {/* Carousel — infinite scroll */}
-          <style>{`
-            @keyframes marquee {
-              from { transform: translateX(0); }
-              to   { transform: translateX(-50%); }
-            }
-            .marquee-track { animation: marquee 40s linear infinite; }
-            .marquee-track:hover { animation-play-state: paused; }
-          `}</style>
-
-          <div className="relative z-10 overflow-hidden">
-            {/* Fade masks left/right */}
-            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10"
-              style={{ background: 'linear-gradient(to right, #09090b, transparent)' }} />
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10"
-              style={{ background: 'linear-gradient(to left, #09090b, transparent)' }} />
-
-            <div className="flex marquee-track" style={{ width: 'max-content' }}>
-              {[...[
-                { name: 'Sofía A.',     avatar: 'https://i.pravatar.cc/80?img=1',  event: 'Matrimonio · Vitacura',         text: 'El truck fue la atracción principal. El café de especialidad superó todas las expectativas. ¡Nuestros invitados siguen hablando de eso!' },
-                { name: 'Tomás B.',     avatar: 'https://i.pravatar.cc/80?img=12', event: 'Corporativo · Las Condes',       text: 'Puntualidad, profesionalismo y un producto de calidad brutal. Lo hemos contratado tres veces para eventos de empresa.' },
-                { name: 'Fernanda C.',  avatar: 'https://i.pravatar.cc/80?img=5',  event: 'Cumpleaños · Providencia',      text: 'El diseño del truck encajó perfecto con la decoración. Los helados artesanales fueron un hit total con los niños y adultos.' },
-                { name: 'Andrés D.',    avatar: 'https://i.pravatar.cc/80?img=15', event: 'Festival · La Dehesa',           text: 'Para nuestro festival de verano fue el puesto más visitado. La gente formaba fila por el café frío. Increíble.' },
-                { name: 'Isidora E.',   avatar: 'https://i.pravatar.cc/80?img=9',  event: 'Matrimonio · Lo Barnechea',     text: 'Gracias a Boa Noite nuestro matrimonio tuvo ese toque diferente que buscábamos. Muy recomendados, sin dudarlo.' },
-                { name: 'Matías F.',    avatar: 'https://i.pravatar.cc/80?img=22', event: 'Corporativo · Ñuñoa',           text: 'Nuestro equipo quedó encantado en el team building. Servicio impecable, sabores únicos y una presentación top.' },
-                { name: 'Javiera G.',   avatar: 'https://i.pravatar.cc/80?img=16', event: 'Aniversario · Las Condes',      text: 'El detalle del truck rosa y turquesa fue la foto más compartida de la noche. Un 10/10 en todo sentido.' },
-                { name: 'Sebastián H.', avatar: 'https://i.pravatar.cc/80?img=33', event: 'Lanzamiento · Providencia',     text: 'El lanzamiento de producto necesitaba algo memorable. Boa Noite lo dio. Los clientes llegaron por el café y se quedaron por el helado.' },
-                { name: 'Camila I.',    avatar: 'https://i.pravatar.cc/80?img=25', event: 'Boda · Vitacura',               text: 'Desde el primer contacto hasta el último café, todo fue perfecto. Son serios, creativos y el resultado superó lo esperado.' },
-                { name: 'Felipe J.',    avatar: 'https://i.pravatar.cc/80?img=51', event: 'Evento Social · La Dehesa',     text: 'Contraté Boa Noite para el cumpleaños de mi madre y fue un éxito rotundo. La calidad del café es otra categoría.' },
-                { name: 'Renata K.',    avatar: 'https://i.pravatar.cc/80?img=47', event: 'Matrimonio · Ñuñoa',            text: 'Nuestros invitados no podían creer que un food truck sirviera café de esa calidad. Absolutamente recomendados.' },
-                { name: 'Diego L.',     avatar: 'https://i.pravatar.cc/80?img=60', event: 'Corporativo · Santiago Centro', text: 'Gran experiencia de principio a fin. El truck es instagrameable y el servicio, impecable. Volvemos a contratarlos.' },
-              ], ...[
-                { name: 'Sofía A.',     avatar: 'https://i.pravatar.cc/80?img=1',  event: 'Matrimonio · Vitacura',         text: 'El truck fue la atracción principal. El café de especialidad superó todas las expectativas. ¡Nuestros invitados siguen hablando de eso!' },
-                { name: 'Tomás B.',     avatar: 'https://i.pravatar.cc/80?img=12', event: 'Corporativo · Las Condes',       text: 'Puntualidad, profesionalismo y un producto de calidad brutal. Lo hemos contratado tres veces para eventos de empresa.' },
-                { name: 'Fernanda C.',  avatar: 'https://i.pravatar.cc/80?img=5',  event: 'Cumpleaños · Providencia',      text: 'El diseño del truck encajó perfecto con la decoración. Los helados artesanales fueron un hit total con los niños y adultos.' },
-                { name: 'Andrés D.',    avatar: 'https://i.pravatar.cc/80?img=15', event: 'Festival · La Dehesa',           text: 'Para nuestro festival de verano fue el puesto más visitado. La gente formaba fila por el café frío. Increíble.' },
-                { name: 'Isidora E.',   avatar: 'https://i.pravatar.cc/80?img=9',  event: 'Matrimonio · Lo Barnechea',     text: 'Gracias a Boa Noite nuestro matrimonio tuvo ese toque diferente que buscábamos. Muy recomendados, sin dudarlo.' },
-                { name: 'Matías F.',    avatar: 'https://i.pravatar.cc/80?img=22', event: 'Corporativo · Ñuñoa',           text: 'Nuestro equipo quedó encantado en el team building. Servicio impecable, sabores únicos y una presentación top.' },
-                { name: 'Javiera G.',   avatar: 'https://i.pravatar.cc/80?img=16', event: 'Aniversario · Las Condes',      text: 'El detalle del truck rosa y turquesa fue la foto más compartida de la noche. Un 10/10 en todo sentido.' },
-                { name: 'Sebastián H.', avatar: 'https://i.pravatar.cc/80?img=33', event: 'Lanzamiento · Providencia',     text: 'El lanzamiento de producto necesitaba algo memorable. Boa Noite lo dio. Los clientes llegaron por el café y se quedaron por el helado.' },
-                { name: 'Camila I.',    avatar: 'https://i.pravatar.cc/80?img=25', event: 'Boda · Vitacura',               text: 'Desde el primer contacto hasta el último café, todo fue perfecto. Son serios, creativos y el resultado superó lo esperado.' },
-                { name: 'Felipe J.',    avatar: 'https://i.pravatar.cc/80?img=51', event: 'Evento Social · La Dehesa',     text: 'Contraté Boa Noite para el cumpleaños de mi madre y fue un éxito rotundo. La calidad del café es otra categoría.' },
-                { name: 'Renata K.',    avatar: 'https://i.pravatar.cc/80?img=47', event: 'Matrimonio · Ñuñoa',            text: 'Nuestros invitados no podían creer que un food truck sirviera café de esa calidad. Absolutamente recomendados.' },
-                { name: 'Diego L.',     avatar: 'https://i.pravatar.cc/80?img=60', event: 'Corporativo · Santiago Centro', text: 'Gran experiencia de principio a fin. El truck es instagrameable y el servicio, impecable. Volvemos a contratarlos.' },
-              ]].map((t, i) => (
-                <div
-                  key={i}
-                  className="shrink-0 w-80 min-h-[420px] mx-3 glass rounded-2xl p-8 border border-white/6 flex flex-col gap-5 hover:border-[#ec4899]/30 transition-colors duration-300"
-                >
-                  {/* Stars */}
-                  <div className="flex gap-1">
-                    {Array.from({ length: 5 }).map((_, s) => (
-                      <Star key={s} size={11} className="fill-[#ec4899] text-[#ec4899]" />
-                    ))}
-                  </div>
-
-                  {/* Text */}
-                  <p className="text-base text-white/55 font-light leading-relaxed flex-1 italic">
-                    "{t.text}"
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex items-center gap-3 border-t border-white/6 pt-4">
-                    <img
-                      src={t.avatar}
-                      alt={t.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-white/10"
-                    />
-                    <div>
-                      <div className="text-sm font-bold text-white leading-tight">{t.name}</div>
-                      <div className="text-[10px] text-white/30 uppercase tracking-widest mt-0.5">{t.event}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* ══════════════════════════════════════════════════
             FAQ

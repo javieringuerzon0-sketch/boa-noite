@@ -36,3 +36,4 @@ skills-lock.json
 scripts/
 
 .vercel
+.env*.local

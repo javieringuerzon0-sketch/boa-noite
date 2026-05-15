@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ScrollLink } from '../components/ui/ScrollLink';
+import { Zap, Eye, Globe, GraduationCap, Music, Coffee } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────────
    HOOK — Intersection Observer for scroll-triggered animations
@@ -81,19 +82,19 @@ const CHAPTERS = [
 
 const VALORES = [
   {
-    icon: '✦',
+    Icon: Zap,
     gradient: 'from-[#ec4899] to-[#c026d3]',
     title: 'Calidad sin compromiso',
     desc: 'Solo usamos ingredientes de grado especialidad. El café viene de orígenes únicos seleccionados cada semana. Los helados se preparan en el truck. Nada industrial. Nunca.',
   },
   {
-    icon: '◈',
+    Icon: Eye,
     gradient: 'from-neon-purple to-neon-blue',
     title: 'Experiencia sobre todo',
     desc: 'El espacio, la estética, el detalle visual — todo importa. Un buen café en un entorno feo sigue siendo una experiencia mediocre. Nosotros cuidamos el todo.',
   },
   {
-    icon: '◎',
+    Icon: Globe,
     gradient: 'from-[#2dd4bf] to-neon-blue',
     title: 'Movimiento y naturaleza',
     desc: 'No tenemos local fijo porque el mundo es nuestro local. Vamos a ti, a tus espacios abiertos, a tus festivales. Somos tan libres como los eventos que servimos.',
@@ -294,10 +295,10 @@ export function Alma() {
                 <div className="mt-6 glass rounded-xl p-4 border border-[#2dd4bf]/20">
                   <div className="flex items-center gap-3">
                     <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-lg shrink-0"
+                      className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                       style={{ background: 'linear-gradient(135deg, #ec4899, #2dd4bf)' }}
                     >
-                      🎵
+                      <Music size={18} className="text-white" />
                     </div>
                     <div>
                       <div className="text-xs font-bold text-white/80">Inspirado en</div>
@@ -520,10 +521,10 @@ export function Alma() {
           <Reveal delay={200} className="mt-10">
             <div className="glass-strong rounded-2xl p-6 border border-white/6 flex flex-col sm:flex-row items-center justify-center gap-6 text-center sm:text-left">
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0"
+                className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
                 style={{ background: 'linear-gradient(135deg, #ec4899 0%, #2dd4bf 100%)' }}
               >
-                🎓
+                <GraduationCap size={22} className="text-white" />
               </div>
               <div>
                 <div className="text-sm font-bold text-white tracking-wide uppercase">Ingenieros Comerciales · Universidad Diego Portales</div>
@@ -576,7 +577,9 @@ export function Alma() {
 
           {/* Cards */}
           <div className="grid md:grid-cols-3 gap-6">
-            {VALORES.map((v, i) => (
+            {VALORES.map((v, i) => {
+              const ValorIcon = v.Icon;
+              return (
               <Reveal key={v.title} delay={i * 100}>
                 <div className="group glass-strong rounded-2xl p-8 border border-white/6 hover:border-white/14 transition-all duration-500 h-full flex flex-col gap-6"
                   style={{ transition: 'all 0.5s ease' }}
@@ -585,15 +588,10 @@ export function Alma() {
                 >
                   {/* Icon */}
                   <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-extrabold transition-transform duration-500 group-hover:scale-110"
-                    style={{ background: `linear-gradient(135deg, var(--tw-gradient-from, #ec4899), var(--tw-gradient-to, #2dd4bf))` }}
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
+                    style={{ background: `linear-gradient(135deg, ${i === 0 ? '#ec4899, #c026d3' : i === 1 ? '#c026d3, #38bdf8' : '#2dd4bf, #38bdf8'})` }}
                   >
-                    <span
-                      className="font-extrabold text-white"
-                      style={{ fontSize: '1.4rem', lineHeight: 1 }}
-                    >
-                      {v.icon}
-                    </span>
+                    <ValorIcon size={24} className="text-white" />
                   </div>
 
                   {/* Title */}
@@ -633,7 +631,8 @@ export function Alma() {
                   </div>
                 </div>
               </Reveal>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>

@@ -69,7 +69,7 @@ const HELADOS = [
     desc: 'Lo mejor de ambos mundos — vainilla y chocolate en un solo cono. El favorito de los eventos.',
     tag: 'Vainilla & Chocolate',
     img: '/menu/soft-mixto.jpg',
-    wide: true,
+    wide: false,
   },
 ];
 
@@ -100,7 +100,7 @@ const DULCES = [
     desc: 'Intenso y húmedo, con ganache de chocolate y chips en cada capa. Para los amantes del cacao.',
     tag: 'Chocolate Intenso',
     img: '/menu/muffin-chocolate.jpg',
-    wide: false,
+    wide: true,
   },
 ];
 

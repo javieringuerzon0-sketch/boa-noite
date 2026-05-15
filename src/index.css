@@ -210,3 +210,59 @@
   background: rgba(192,38,211,0.28);
   color: #fff;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   FOCUS STATES — keyboard navigation (WCAG AA)
+═══════════════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid #c026d3;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STEP SLIDE ANIMATIONS — from Contacto inline style
+═══════════════════════════════════════════════════════════ */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-in-right { animation: slideInRight 0.4s cubic-bezier(0.22,1,0.36,1) both; }
+.animate-slide-in-left  { animation: slideInLeft  0.4s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE MENU — slide down animation
+═══════════════════════════════════════════════════════════ */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-down { animation: slideDown 0.25s ease forwards; }
+
+/* ═══════════════════════════════════════════════════════════
+   MARQUEE TRACK — Contacto testimonials (pause on hover)
+═══════════════════════════════════════════════════════════ */
+.marquee-track {
+  animation: marquee 40s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   PREFERS REDUCED MOTION — accessibility
+═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,11 +1,44 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { ArrowRight, Star, Quote, Zap, Trophy, Coffee, IceCream, Users, Volume2, VolumeX, MapPin, Navigation, ChevronDown, CheckCircle, Truck, Loader2, Instagram, MessageCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { ScrollLink } from '../components/ui/ScrollLink';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTruckLocation, timeAgo, reverseGeocode, fetchLocationFromDB, syncLocationToDB, clearLocationInDB, subscribeToLocation } from '../use-cases/location';
+import { supabase } from '../lib/supabase';
+
+/* ── Testimonial card — crossfade premium, ambos siempre en DOM ── */
+interface TestiItem { quote: string; name: string; role: string; img: string; }
+function TestimonialCard({ items, idx }: { items: TestiItem[]; idx: number }) {
+  const activeIdx = idx % items.length;
+  return (
+    <div className="relative" style={{ minHeight: '160px' }}>
+      {items.map((t, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: activeIdx === i ? 1 : 0,
+            transition: 'opacity 0.8s cubic-bezier(0.4,0,0.2,1)',
+            pointerEvents: activeIdx === i ? 'auto' : 'none',
+          }}
+        >
+          <p className="text-zinc-300 text-sm leading-relaxed">"{t.quote}"</p>
+          <div className="flex items-center gap-3 mt-5">
+            <img src={t.img} alt={t.name} className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10 shrink-0" />
+            <div>
+              <div className="text-white text-sm font-medium">{t.name}</div>
+              <div className="text-zinc-500 text-xs">{t.role}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // Static color map — prevents Tailwind from purging dynamic class names
 const C = {
@@ -127,10 +160,10 @@ function useCloseCountdown(closeHour: number) {
 /* ── Próxima parada ──────────────────────── */
 const NEXT_EVENT = {
   label: 'Próxima Parada',
-  name: 'Lollapalooza Chile 2026',
+  name: 'Lollapalooza Chile 2027',
   venue: 'Parque Bicentenario Cerrillos',
   city: 'Santiago · Chile',
-  date: new Date('2026-03-28T12:00:00'),
+  date: new Date('2027-03-27T12:00:00'),
 };
 
 /* ── Testimonios rotativos ───────────────── */
@@ -322,7 +355,7 @@ export function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           access_key: import.meta.env.VITE_WEB3FORMS_KEY,
-          subject: `🌙 Solicitud de evento — ${data.name} · ${data.eventType}`,
+          subject: `Solicitud de evento — ${data.name} · ${data.eventType}`,
           from_name: data.name,
           name: data.name,
           email: data.email,
@@ -336,9 +369,20 @@ export function Home() {
       });
       const json = await res.json();
       if (!json.success) throw new Error('Error al enviar');
+      supabase?.from('leads').insert({
+        name:       data.name,
+        email:      data.email,
+        event_type: data.eventType,
+        date:       data.date,
+        notes:      data.notes || null,
+        source:     'home',
+      }).then(() => {});
       setSubmitted(true);
+      toast.success('¡Solicitud enviada! Te contactamos en menos de 24h.');
     } catch {
-      setSendError('No se pudo enviar. Inténtalo de nuevo.');
+      const msg = 'No se pudo enviar. Inténtalo de nuevo.';
+      setSendError(msg);
+      toast.error(msg);
     } finally {
       setSending(false);
     }
@@ -363,18 +407,11 @@ export function Home() {
     return () => clearInterval(id);
   }, []);
 
-  // Testimonios rotativos
-  const [activeTesti, setActiveTesti] = useState(0);
-  const [testiFade, setTestiFade] = useState(true);
+  // Testimonios rotativos — crossfade, un solo state
+  const [testiIdx, setTestiIdx] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      setTestiFade(false);
-      setTimeout(() => {
-        setActiveTesti(p => (p + 1) % TRUST_TESTIMONIALS.length);
-        setTestiFade(true);
-      }, 350);
-    }, 5500);
+    const id = setInterval(() => setTestiIdx(i => i + 1), 4500);
     return () => clearInterval(id);
   }, []);
 
@@ -439,6 +476,12 @@ export function Home() {
               </ScrollLink>
             </div>
           </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-up delay-700 z-10">
+          <div className="w-px h-10 bg-gradient-to-b from-transparent to-white/30" />
+          <ChevronDown size={16} className="text-white/30 animate-float" />
         </div>
 
       </section>
@@ -803,98 +846,29 @@ export function Home() {
 
                 {/* 3 cards with 2 rotating testimonials each */}
                 <div className="grid lg:grid-cols-3 mt-6 gap-6 relative" style={{ minHeight: '220px' }}>
-                  <style>{`
-                    @keyframes slideLoop {
-                      0%   { opacity: 0; transform: translateY(30px); }
-                      10%  { opacity: 1; transform: translateY(0); }
-                      45%  { opacity: 1; transform: translateY(0); }
-                      55%  { opacity: 0; transform: translateY(-30px); }
-                      100% { opacity: 0; transform: translateY(-30px); }
-                    }
-                  `}</style>
 
-                  {/* Card 1 — 2 testimonios alternados */}
+                  {/* Card 1 */}
                   <div className="flex flex-col xl:bg-neutral-950 text-left bg-white/5 ring-1 ring-white/10 p-6 overflow-hidden relative" style={{ minHeight: '200px' }}>
-                    <div className="absolute inset-6" style={{ animation: 'slideLoop 10s ease-in-out 0s infinite' }}>
-                      <p className="text-zinc-300 text-sm leading-relaxed">
-                        "El truck llegó al festival y se formó una fila de 50 personas en 10 minutos. El café más comentado del evento."
-                      </p>
-                      <div className="flex items-center gap-3 mt-5">
-                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=80" alt="Catalina" className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10 shrink-0" />
-                        <div>
-                          <div className="text-white text-sm font-medium">Catalina Morales</div>
-                          <div className="text-zinc-500 text-xs">Organizadora @ FestivalMX</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="absolute inset-6" style={{ animation: 'slideLoop 10s ease-in-out 5s infinite' }}>
-                      <p className="text-zinc-300 text-sm leading-relaxed">
-                        "Pedí un muffin de chocolate y quedé sin palabras. No esperaba ese nivel artesanal en medio de un partido."
-                      </p>
-                      <div className="flex items-center gap-3 mt-5">
-                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=80" alt="Fernanda" className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10 shrink-0" />
-                        <div>
-                          <div className="text-white text-sm font-medium">Fernanda Lagos</div>
-                          <div className="text-zinc-500 text-xs">Asistente @ Estadio Monumental</div>
-                        </div>
-                      </div>
-                    </div>
+                    <TestimonialCard idx={testiIdx} items={[
+                      { quote: 'El truck llegó al festival y se formó una fila de 50 personas en 10 minutos. El café más comentado del evento.', name: 'Catalina Morales', role: 'Organizadora @ FestivalMX', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=80' },
+                      { quote: 'Pedí un muffin de chocolate y quedé sin palabras. No esperaba ese nivel artesanal en medio de un partido.', name: 'Fernanda Lagos', role: 'Asistente @ Estadio Monumental', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=80' },
+                    ]} />
                   </div>
 
-                  {/* Card 2 — 2 testimonios alternados */}
+                  {/* Card 2 */}
                   <div className="flex flex-col xl:bg-neutral-950 text-left bg-white/5 ring-1 ring-white/10 p-6 overflow-hidden relative" style={{ minHeight: '200px' }}>
-                    <div className="absolute inset-6" style={{ animation: 'slideLoop 10s ease-in-out 0s infinite' }}>
-                      <p className="text-zinc-300 text-sm leading-relaxed">
-                        "Contratamos a Boa Noite para nuestro lanzamiento. Todos los asistentes preguntaron quiénes eran. Pura calidad y estética."
-                      </p>
-                      <div className="flex items-center gap-3 mt-5">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=80" alt="Felipe" className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10 shrink-0" />
-                        <div>
-                          <div className="text-white text-sm font-medium">Felipe Andrade</div>
-                          <div className="text-zinc-500 text-xs">Director Creativo @ Agencia Norte</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="absolute inset-6" style={{ animation: 'slideLoop 10s ease-in-out 5s infinite' }}>
-                      <p className="text-zinc-300 text-sm leading-relaxed">
-                        "El helado de chocolate después de un gol es otra experiencia. No sé cómo lo lograron pero el truck siempre está en el momento exacto."
-                      </p>
-                      <div className="flex items-center gap-3 mt-5">
-                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=80" alt="Ignacio" className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10 shrink-0" />
-                        <div>
-                          <div className="text-white text-sm font-medium">Ignacio Bravo</div>
-                          <div className="text-zinc-500 text-xs">Hincha @ Estadio San Carlos</div>
-                        </div>
-                      </div>
-                    </div>
+                    <TestimonialCard idx={testiIdx} items={[
+                      { quote: 'Contratamos a Boa Noite para nuestro lanzamiento. Todos los asistentes preguntaron quiénes eran. Pura calidad y estética.', name: 'Felipe Andrade', role: 'Director Creativo @ Agencia Norte', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=80' },
+                      { quote: 'El helado de chocolate después de un gol es otra experiencia. El truck siempre está en el momento exacto.', name: 'Ignacio Bravo', role: 'Hincha @ Estadio San Carlos', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=80' },
+                    ]} />
                   </div>
 
-                  {/* Card 3 — 2 testimonios alternados */}
+                  {/* Card 3 */}
                   <div className="flex flex-col xl:bg-neutral-950 text-left bg-white/5 ring-1 ring-white/10 p-6 overflow-hidden relative" style={{ minHeight: '200px' }}>
-                    <div className="absolute inset-6" style={{ animation: 'slideLoop 10s ease-in-out 0s infinite' }}>
-                      <p className="text-zinc-300 text-sm leading-relaxed">
-                        "Nunca pensé que en plena cancha iba a tomar un espresso de este nivel. Boa Noite cambió mis estándares para siempre."
-                      </p>
-                      <div className="flex items-center gap-3 mt-5">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=80" alt="Valentina" className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10 shrink-0" />
-                        <div>
-                          <div className="text-white text-sm font-medium">Valentina Cruz</div>
-                          <div className="text-zinc-500 text-xs">Asistente @ Lollapalooza Chile</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="absolute inset-6" style={{ animation: 'slideLoop 10s ease-in-out 5s infinite' }}>
-                      <p className="text-zinc-300 text-sm leading-relaxed">
-                        "Mi café favorito está en un food truck itinerante. Lo sigo a donde va. La calidad del grano y el servicio no tienen comparación."
-                      </p>
-                      <div className="flex items-center gap-3 mt-5">
-                        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=80" alt="Pilar" className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10 shrink-0" />
-                        <div>
-                          <div className="text-white text-sm font-medium">Pilar Soto</div>
-                          <div className="text-zinc-500 text-xs">Cliente frecuente · Santiago</div>
-                        </div>
-                      </div>
-                    </div>
+                    <TestimonialCard idx={testiIdx} items={[
+                      { quote: 'Nunca pensé que en plena cancha iba a tomar un espresso de este nivel. Boa Noite cambió mis estándares para siempre.', name: 'Valentina Cruz', role: 'Asistente @ Lollapalooza Chile', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=80' },
+                      { quote: 'Mi café favorito está en un food truck itinerante. Lo sigo a donde va. La calidad del grano no tiene comparación.', name: 'Pilar Soto', role: 'Cliente frecuente · Santiago', img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=80' },
+                    ]} />
                   </div>
 
                 </div>
@@ -1322,12 +1296,13 @@ export function Home() {
                   </div>
                 ) : (
                   <form className="grid grid-cols-1 sm:grid-cols-2 gap-4" onSubmit={hsEvent(onEventSubmit)}>
-                    <div className="sm:col-span-2 flex flex-col gap-2">
+                    <div className="sm:col-span-2 flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre completo</label>
                       <input {...regEvent('name')} type="text" placeholder="Nombre completo"
                         className={`glass bg-white/3 border text-white text-sm px-4 py-3 rounded-xl focus:outline-none transition-all placeholder:text-gray-600 ${evErrors.name ? 'border-red-500/50' : 'border-white/8 focus:border-neon-purple/50'}`} />
+                      {evErrors.name && <p className="text-red-400 text-[10px]">{evErrors.name.message || 'Nombre requerido (mín. 2 caracteres)'}</p>}
                     </div>
-                    <div className="sm:col-span-2 flex flex-col gap-2">
+                    <div className="sm:col-span-2 flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Tipo de evento</label>
                       <div className="relative">
                         <select {...regEvent('eventType')} className="appearance-none glass bg-white/3 border border-white/8 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-neon-purple/50 transition-all w-full cursor-pointer">
@@ -1338,15 +1313,17 @@ export function Home() {
                         <ChevronDown size={13} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Fecha tentativa</label>
                       <input {...regEvent('date')} type="datetime-local"
                         className={`glass bg-white/3 border text-white text-sm px-4 py-3 rounded-xl focus:outline-none transition-all [color-scheme:dark] ${evErrors.date ? 'border-red-500/50' : 'border-white/8 focus:border-neon-purple/50'}`} />
+                      {evErrors.date && <p className="text-red-400 text-[10px]">Selecciona una fecha</p>}
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Email</label>
                       <input {...regEvent('email')} type="email" placeholder="tu@email.com"
                         className={`glass bg-white/3 border text-white text-sm px-4 py-3 rounded-xl focus:outline-none transition-all placeholder:text-gray-600 ${evErrors.email ? 'border-red-500/50' : 'border-white/8 focus:border-neon-purple/50'}`} />
+                      {evErrors.email && <p className="text-red-400 text-[10px]">Email inválido</p>}
                     </div>
                     <div className="sm:col-span-2 flex flex-col gap-2">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Mensaje / Motivo</label>

@@ -93,7 +93,7 @@ export function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-[#09090b]/95 backdrop-blur-xl border-t border-white/6 md:hidden">
+        <div className="absolute top-full left-0 w-full bg-[#09090b]/95 backdrop-blur-xl border-t border-white/6 md:hidden animate-slide-down">
           <nav className="flex flex-col py-6 px-6 gap-1">
             {NAV_LINKS.map(({ to, label }) => (
               <ScrollLink
